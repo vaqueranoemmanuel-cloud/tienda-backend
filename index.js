@@ -78,3 +78,50 @@ app.delete('/ventas/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor Express corriendo en puerto ${PORT}`);
 });
+
+
+const API_URL = 'http://localhost:5000'; // O tu URL de backend desplegada
+
+useEffect(() => {
+  // Cargar estudiantes
+  fetch(`${API_URL}/estudiantes`)
+    .then((res) => {
+      if (!res.ok) throw new Error('Error en la red');
+      return res.json();
+    })
+    .then((data) => setEstudiantes(data))
+    .catch((err) => console.error('Error al obtener estudiantes:', err));
+
+  // Cargar productos
+  fetch(`${API_URL}/productos`)
+    .then((res) => {
+      if (!res.ok) throw new Error('Error en la red');
+      return res.json();
+    })
+    .then((data) => setProductos(data))
+    .catch((err) => console.error('Error al obtener productos:', err));
+}, []);
+
+
+app.get('/estudiantes', (req, res) => {
+  const query = 'SELECT * FROM estudiantes';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error en la consulta MySQL:', err);
+      return res.status(500).json({ error: 'Error al consultar la base de datos' });
+    }
+    res.json(results);
+  });
+});
+
+// Ruta para obtener productos
+app.get('/productos', (req, res) => {
+  const query = 'SELECT * FROM productos';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error en la consulta MySQL:', err);
+      return res.status(500).json({ error: 'Error al consultar la base de datos' });
+    }
+    res.json(results);
+  });
+});
